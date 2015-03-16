@@ -7,20 +7,20 @@ public class Program{
         var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
         try {
 
-            brain.Connection.Open(); //connect to brick
+            //brain.Connection.Open(); //connect to brick
 
-            brain.Sensor2 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
-
-            brain.Sensor3 = new ColorSensor(ColorMode.Color); // set color sensor mode
-            brain.Sensor1 = new TouchSensor(TouchMode.Boolean); // set touch sensor to button mode
+            brain.Sensor1 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
+            brain.Sensor2 = new ColorSensor(ColorMode.Color); // set color sensor mode
+            brain.Sensor3 = new TouchSensor(TouchMode.Boolean); // set touch sensor to button mode
 
             brain.Vehicle.LeftPort = MotorPort.OutA;    //
             brain.Vehicle.RightPort = MotorPort.OutD;   // initialise 'vehicle' motors
             brain.Vehicle.ReverseLeft = false;          //
             brain.Vehicle.ReverseRight = true;          //
-            sbyte speed = 20;                           // robot's speed, will need changing
 
+            sbyte speed = 20;                           // robot's speed, will need changing
             string surfaceColor = "6";                  //colour for robot to stay on
+            string maxDistance = "6";                      // distance where 'collision' becomes possible
 
             ConsoleKeyInfo quitKey;                         //
             Console.WriteLine("Press Q to exit program");   // set up exit clause
@@ -42,7 +42,7 @@ public class Program{
                     }
                 }
 
-                if (edgeMode)
+                if (edgeMode || brain.Sensor1.ReadAsString() == maxDistance ) // collision checker
                 {
                     if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
                     {
@@ -57,6 +57,7 @@ public class Program{
                         }
                     }
                 }
+                brain.Vehicle.Forward(speed);
                 
             } while (quitKey.Key != ConsoleKey.Q);
         }
