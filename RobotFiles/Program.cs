@@ -4,18 +4,15 @@ using MonoBrick.EV3;
 
 public class Program{
     static void Main(string[] args){
-        //set up brick here to allow all functions access
-        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6");
+        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
         try {
-            Console.WriteLine("Hey hey");
-            Console.ReadKey();
-            //brain.Connection.Open(); //connect to brick
 
-            //brain.Sensor2 = new UltrasonicSensor(UltrasonicMode.Centimeter);
-            //brain.Sensor2.ReadAsString(); //idk if this'll work, test it
+            brain.Connection.Open(); //connect to brick
 
-            brain.Sensor3 = new ColorSensor(ColorMode.Color);
-            brain.Sensor1 = new TouchSensor(TouchMode.Boolean);
+            brain.Sensor2 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
+
+            brain.Sensor3 = new ColorSensor(ColorMode.Color); // set color sensor mode
+            brain.Sensor1 = new TouchSensor(TouchMode.Boolean); // set touch sensor to button mode
 
             brain.Vehicle.LeftPort = MotorPort.OutA;    //
             brain.Vehicle.RightPort = MotorPort.OutD;   // initialise 'vehicle' motors
@@ -47,8 +44,7 @@ public class Program{
 
                 if (edgeMode)
                 {
-                    if (brain.Sensor3.ReadAsString() != surfaceColor)
-                        //if robot leaves surface, could be dodgy if it goes at an angle
+                    if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
                     {
                         brain.Vehicle.Backward(speed); //reverse
                         if (randomVal.Next(0, 1) == 1) //pick a random direction
