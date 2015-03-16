@@ -4,7 +4,8 @@ using MonoBrick.EV3;
 
 public class Program{
     static void Main(string[] args){
-        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
+        //set up brick here to allow all functions access
+        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6");
         try {
             Console.WriteLine("Hey hey");
             Console.ReadKey();
@@ -46,7 +47,8 @@ public class Program{
 
                 if (edgeMode)
                 {
-                    if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
+                    if (brain.Sensor3.ReadAsString() != surfaceColor)
+                        //if robot leaves surface, could be dodgy if it goes at an angle
                     {
                         brain.Vehicle.Backward(speed); //reverse
                         if (randomVal.Next(0, 1) == 1) //pick a random direction
