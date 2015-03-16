@@ -4,11 +4,11 @@ using MonoBrick.EV3;
 
 public class Program{
     static void Main(string[] args){
+        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
         try {
             Console.WriteLine("Hey hey");
             Console.ReadKey();
-            var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
-            brain.Connection.Open(); //connect to brick
+            //brain.Connection.Open(); //connect to brick
 
             //brain.Sensor2 = new UltrasonicSensor(UltrasonicMode.Centimeter);
             //brain.Sensor2.ReadAsString(); //idk if this'll work, test it
@@ -22,15 +22,15 @@ public class Program{
             brain.Vehicle.ReverseRight = true;          //
             sbyte speed = 20;                           // robot's speed, will need changing
 
-            string surfaceColor = "6";
+            string surfaceColor = "6";                  //colour for robot to stay on
 
             ConsoleKeyInfo quitKey;                         //
             Console.WriteLine("Press Q to exit program");   // set up exit clause
 
-            Random randomVal = new Random();
+            Random randomVal = new Random();    //random number for when i need it
             do
             {
-                quitKey = Console.ReadKey(true);
+                quitKey = Console.ReadKey(true); //check if Q has been pressed
                 bool edgeMode = false; //check if edge-sensing mode enabled
                 if (brain.Sensor1.ReadAsString() == "1")
                 { //enable/disable edge-sensing mode depending on previous state
@@ -46,16 +46,16 @@ public class Program{
 
                 if (edgeMode)
                 {
-                    if (brain.Sensor3.ReadAsString() != surfaceColor)
+                    if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
                     {
                         brain.Vehicle.Backward(speed); //reverse
-                        if (randomVal.Next(0, 1) == 1)
+                        if (randomVal.Next(0, 1) == 1) //pick a random direction
                         {
-                            brain.Vehicle.SpinLeft(speed);
+                            brain.Vehicle.SpinLeft(speed); //rotate left 
                         }
                         else
                         {
-                            brain.Vehicle.SpinRight(speed);
+                            brain.Vehicle.SpinRight(speed); //rotate right
                         }
                     }
                 }
@@ -66,6 +66,10 @@ public class Program{
             Console.WriteLine("Error: "+ e.Message);
             Console.WriteLine("Press any key ...");
             Console.ReadKey();
+        }
+        finally
+        {
+            brain.Connection.Close(); //close connection
         }
     }      
 }
