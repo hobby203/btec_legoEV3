@@ -4,10 +4,10 @@ using MonoBrick.EV3;
 
 public class Program{
     static void Main(string[] args){
-        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
+        //var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("usb"); //set up brick here to allow all functions access
         try {
-
-            //brain.Connection.Open(); //connect to brick
+            /*
+            brain.Connection.Open(); //connect to brick
 
             brain.Sensor1 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
             brain.Sensor2 = new ColorSensor(ColorMode.Color); // set color sensor mode
@@ -18,18 +18,23 @@ public class Program{
             brain.Vehicle.ReverseLeft = false;          //
             brain.Vehicle.ReverseRight = true;          //
 
-            sbyte speed = 20;                           // robot's speed, will need changing
+            sbyte speed = 50;                           // robot's speed, will need changing
             string surfaceColor = "6";                  //colour for robot to stay on
-            string maxDistance = "6";                      // distance where 'collision' becomes possible
-
-            ConsoleKeyInfo quitKey;                         //
+            string maxDistance = "6 cm";                      // distance where 'collision' becomes possible
+                         //
             Console.WriteLine("Press Q to exit program");   // set up exit clause
+            ConsoleKeyInfo quitKey;
+            quitKey = Console.ReadKey(true);
 
             Random randomVal = new Random();    //random number for when i need it
-            do
+             */
+            while (true)
             {
+                /*
+                Console.WriteLine(brain.Sensor1.ReadAsString());
                 quitKey = Console.ReadKey(true); //check if Q has been pressed
                 bool edgeMode = false; //check if edge-sensing mode enabled
+                /*
                 if (brain.Sensor1.ReadAsString() == "1")
                 { //enable/disable edge-sensing mode depending on previous state
                     if (edgeMode == false)
@@ -41,7 +46,7 @@ public class Program{
                         edgeMode = false;
                     }
                 }
-
+                
                 if (edgeMode || brain.Sensor1.ReadAsString() == maxDistance ) // collision checker
                 {
                     if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
@@ -58,9 +63,12 @@ public class Program{
                     }
                 }
                 brain.Vehicle.Forward(speed);
-                
-            } while (quitKey.Key != ConsoleKey.Q);
-        }
+                //brain.Vehicle.Off();
+                Console.WriteLine(brain.Sensor1.ReadAsString());
+                */
+                Console.WriteLine("hey");
+            }  
+            }
         catch(Exception e) {
             Console.WriteLine("Error: "+ e.Message);
             Console.WriteLine("Press any key ...");
@@ -68,7 +76,7 @@ public class Program{
         }
         finally
         {
-            brain.Connection.Close(); //close connection
+            //brain.Connection.Close(); //close connection
         }
     }      
 }
