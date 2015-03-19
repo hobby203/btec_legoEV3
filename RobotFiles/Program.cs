@@ -27,9 +27,7 @@ public class Program{
             Random randomVal = new Random();    //random number for when i need it
             while (!Console.KeyAvailable)
             {
-                Console.WriteLine("imhere");
                 bool edgeMode = false; //check if edge-sensing mode enabled
-                Console.WriteLine("got here");
                 if (brain.Sensor1.ReadAsString() == "1")
                 { //enable/disable edge-sensing mode depending on previous state
                     Console.WriteLine("woooah the button was pressed");
@@ -42,7 +40,6 @@ public class Program{
                         edgeMode = false;
                     }
                 }
-                Console.WriteLine("got here");
                 //if robot leaves surface, could be dodgy if it goes at an angle
                 // I sincerely apologise for this god-awful conditional here
                 if ((brain.Sensor3.ReadAsString() != surfaceColor && edgeMode) || brain.Sensor1.ReadAsString() == maxDistance)
@@ -58,11 +55,7 @@ public class Program{
                     }
                     }
                 brain.Vehicle.Forward(speed);
-            
-                if (quitKey.Key == ConsoleKey.Q)
-                {
-                    break;
-                }
+
                 Console.WriteLine("got to the end!");
             }
         }
