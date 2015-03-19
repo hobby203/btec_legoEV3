@@ -7,7 +7,7 @@ public class Program{
         var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
         try {
 
-            //brain.Connection.Open(); //connect to brick
+            brain.Connection.Open(); //connect to brick
 
             brain.Sensor1 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
             brain.Sensor2 = new ColorSensor(ColorMode.Color); // set color sensor mode
@@ -23,10 +23,11 @@ public class Program{
             string maxDistance = "6";                      // distance where 'collision' becomes possible
 
             ConsoleKeyInfo quitKey;                         //
+            quitKey = Console.ReadKey(true);
             Console.WriteLine("Press Q to exit program");   // set up exit clause
 
             Random randomVal = new Random();    //random number for when i need it
-            do
+            while (true)
             {
                 quitKey = Console.ReadKey(true); //check if Q has been pressed
                 bool edgeMode = false; //check if edge-sensing mode enabled
@@ -41,25 +42,27 @@ public class Program{
                         edgeMode = false;
                     }
                 }
-
-                if (edgeMode || brain.Sensor1.ReadAsString() == maxDistance ) // collision checker
+                //if robot leaves surface, could be dodgy if it goes at an angle
+                // I sincerely apologise for this god-awful conditional here
+                if ((brain.Sensor3.ReadAsString() != surfaceColor && edgeMode) || brain.Sensor1.ReadAsString() == maxDistance)
                 {
-                    if (brain.Sensor3.ReadAsString() != surfaceColor) //if robot leaves surface, could be dodgy if it goes at an angle
+                    brain.Vehicle.Backward(speed); //reverse
+                    if (randomVal.Next(0, 1) == 1) //pick a random direction
                     {
-                        brain.Vehicle.Backward(speed); //reverse
-                        if (randomVal.Next(0, 1) == 1) //pick a random direction
-                        {
-                            brain.Vehicle.SpinLeft(speed); //rotate left 
-                        }
-                        else
-                        {
-                            brain.Vehicle.SpinRight(speed); //rotate right
-                        }
+                        brain.Vehicle.SpinLeft(speed); //rotate left 
                     }
-                }
+                    else
+                    {
+                        brain.Vehicle.SpinRight(speed); //rotate right
+                    }
+                    }
                 brain.Vehicle.Forward(speed);
-                
-            } while (quitKey.Key != ConsoleKey.Q);
+                Console.WriteLine("got here");
+                if (quitKey.Key == ConsoleKey.Q)
+                {
+                    break;
+                }
+            }
         }
         catch(Exception e) {
             Console.WriteLine("Error: "+ e.Message);
