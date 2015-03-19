@@ -7,7 +7,7 @@ public class Program{
         var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
         try {
 
-            brain.Connection.Open(); //connect to brick
+            //brain.Connection.Open(); //connect to brick
 
             brain.Sensor1 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
             brain.Sensor2 = new ColorSensor(ColorMode.Color); // set color sensor mode
@@ -22,17 +22,19 @@ public class Program{
             string surfaceColor = "6";                  //colour for robot to stay on
             string maxDistance = "6";                      // distance where 'collision' becomes possible
 
-            ConsoleKeyInfo quitKey;                         //
-            quitKey = Console.ReadKey(true);
+            ConsoleKeyInfo quitKey;
             Console.WriteLine("Press Q to exit program");   // set up exit clause
 
             Random randomVal = new Random();    //random number for when i need it
             while (true)
             {
-                quitKey = Console.ReadKey(true); //check if Q has been pressed
+                Console.WriteLine("imhere");
+                //quitKey = Console.ReadKey(true); //check if Q has been pressed
                 bool edgeMode = false; //check if edge-sensing mode enabled
-                if (brain.Sensor1.ReadAsString() == "1")
+                Console.WriteLine("got here");
+                if (/*brain.Sensor1.ReadAsString()*/ 0 == "1")
                 { //enable/disable edge-sensing mode depending on previous state
+                    Console.WriteLine("woooah the button was pressed");
                     if (edgeMode == false)
                     {
                         edgeMode = true;
@@ -42,6 +44,7 @@ public class Program{
                         edgeMode = false;
                     }
                 }
+                Console.WriteLine("got here");
                 //if robot leaves surface, could be dodgy if it goes at an angle
                 // I sincerely apologise for this god-awful conditional here
                 if ((brain.Sensor3.ReadAsString() != surfaceColor && edgeMode) || brain.Sensor1.ReadAsString() == maxDistance)
@@ -58,10 +61,11 @@ public class Program{
                     }
                 brain.Vehicle.Forward(speed);
                 Console.WriteLine("got here");
+                /*
                 if (quitKey.Key == ConsoleKey.Q)
                 {
                     break;
-                }
+                }*/
             }
         }
         catch(Exception e) {
