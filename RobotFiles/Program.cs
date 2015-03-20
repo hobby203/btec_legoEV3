@@ -4,7 +4,7 @@ using MonoBrick.EV3;
 
 public class Program{
     static void Main(string[] args){
-        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com6"); //set up brick here to allow all functions access
+        var brain = new Brick<Sensor, Sensor, Sensor, Sensor>("com4"); //set up brick here to allow all functions access
         try {
 
             brain.Connection.Open(); //connect to brick
@@ -16,11 +16,12 @@ public class Program{
             brain.Vehicle.LeftPort = MotorPort.OutA;    //
             brain.Vehicle.RightPort = MotorPort.OutD;   // initialise 'vehicle' motors
             brain.Vehicle.ReverseLeft = false;          //
-            brain.Vehicle.ReverseRight = true;          //
+            brain.Vehicle.ReverseRight = false;          //
 
-            sbyte speed = 20;                           // robot's speed, will need changing
-            string surfaceColor = "6";                  //colour for robot to stay on
-            string maxDistance = "6";                      // distance where 'collision' becomes possible
+            sbyte speed = 50;                           // robot's speed, will need changing
+            sbyte turn_percent = 25;
+            string surfaceColor = "White";                  //colour for robot to stay on
+            string maxDistance = "6 cm";                      // distance where 'collision' becomes possible
 
             Console.WriteLine("Press any key to exit program");   // set up exit clause
 
@@ -28,7 +29,10 @@ public class Program{
             while (!Console.KeyAvailable)
             {
                 bool edgeMode = false; //check if edge-sensing mode enabled
-                if (brain.Sensor1.ReadAsString() == "1")
+                Console.WriteLine(brain.Sensor3.ReadAsString());
+                Console.WriteLine(brain.Sensor2.ReadAsString());
+                //Console.WriteLine(brain.Sensor1.ReadAsString());
+                if (brain.Sensor3.ReadAsString() == "1")
                 { //enable/disable edge-sensing mode depending on previous state
                     Console.WriteLine("woooah the button was pressed");
                     if (edgeMode == false)
@@ -42,21 +46,30 @@ public class Program{
                 }
                 //if robot leaves surface, could be dodgy if it goes at an angle
                 // I sincerely apologise for this god-awful conditional here
-                if ((brain.Sensor3.ReadAsString() != surfaceColor && edgeMode) || brain.Sensor1.ReadAsString() == maxDistance)
+                if (brain.Sensor2.ReadAsString() != surfaceColor | brain.Sensor1.ReadAsString() == maxDistance)
                 {
-                    brain.Vehicle.Backward(speed); //reverse
-                    if (randomVal.Next(0, 1) == 1) //pick a random direction
+                    Console.WriteLine("saw something");
+                    brain.Vehicle.Brake();
+                    brain.Vehicle.Backward(speed);
+                    brain.Vehicle.SpinLeft(speed);
+                    /*if (randomVal.Next(0, 1) == 1) //pick a random direction
                     {
                         brain.Vehicle.SpinLeft(speed); //rotate left 
+                        Console.WriteLine("spun left");
                     }
                     else
                     {
                         brain.Vehicle.SpinRight(speed); //rotate right
-                    }
-                    }
-                brain.Vehicle.Forward(speed);
+                        Console.WriteLine("spun right");
+                    } */
+                }
+                else
+                {
+                    brain.Vehicle.Forward(speed);
+                }
+                
 
-                Console.WriteLine("got to the end!");
+                //Console.WriteLine("got to the end!");
             }
         }
         catch(Exception e) {
@@ -66,6 +79,7 @@ public class Program{
         }
         finally
         {
+            brain.Vehicle.Brake();
             brain.Connection.Close(); //close connection
         }
     }      
