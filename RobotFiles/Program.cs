@@ -9,19 +9,19 @@ public class Program{
 
             brain.Connection.Open(); //connect to brick
 
-            brain.Sensor1 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
-            brain.Sensor2 = new ColorSensor(ColorMode.Color); // set color sensor mode
-            brain.Sensor3 = new TouchSensor(TouchMode.Boolean); // set touch sensor to button mode
+            brain.Sensor2 = new UltrasonicSensor(UltrasonicMode.Centimeter); // set ultrasonic sensor mode
+            brain.Sensor3 = new ColorSensor(ColorMode.Color); // set color sensor mode
+            //brain.Sensor3 = new TouchSensor(TouchMode.Boolean); // set touch sensor to button mode
 
             brain.Vehicle.LeftPort = MotorPort.OutA;    //
             brain.Vehicle.RightPort = MotorPort.OutD;   // initialise 'vehicle' motors
             brain.Vehicle.ReverseLeft = false;          //
             brain.Vehicle.ReverseRight = false;          //
 
-            sbyte speed = 50;                           // robot's speed, will need changing
-            sbyte turn_percent = 25;
-            string surfaceColor = "White";                  //colour for robot to stay on
-            string maxDistance = "6 cm";                      // distance where 'collision' becomes possible
+            sbyte speed = 127;                          // robot's speed, will need changing
+            sbyte turn_percent = 90;
+            string surfaceColor = "Black";                  //colour for robot to stay on
+            int maxDistance = 20;                      // distance where 'collision' becomes possible
 
             Console.WriteLine("Press any key to exit program");   // set up exit clause
 
@@ -46,22 +46,23 @@ public class Program{
                 }
                 //if robot leaves surface, could be dodgy if it goes at an angle
                 // I sincerely apologise for this god-awful conditional here
-                if (brain.Sensor2.ReadAsString() != surfaceColor | brain.Sensor1.ReadAsString() == maxDistance)
+                string curDistance_string = brain.Sensor2.ReadAsString();
+                curDistance_string = curDistance_string.Remove(2);
+                int curDistance = int.Parse(curDistance_string);
+                if (brain.Sensor3.ReadAsString() != surfaceColor | curDistance <= maxDistance)
                 {
                     Console.WriteLine("saw something");
                     brain.Vehicle.Brake();
-                    brain.Vehicle.Backward(speed);
-                    brain.Vehicle.SpinLeft(speed);
-                    /*if (randomVal.Next(0, 1) == 1) //pick a random direction
+                    if (randomVal.Next(-1, 2) == 1) //pick a random direction
                     {
-                        brain.Vehicle.SpinLeft(speed); //rotate left 
+                        brain.Vehicle.TurnLeftReverse(speed, turn_percent);
                         Console.WriteLine("spun left");
                     }
                     else
                     {
-                        brain.Vehicle.SpinRight(speed); //rotate right
+                        brain.Vehicle.TurnRightReverse(speed, turn_percent);
                         Console.WriteLine("spun right");
-                    } */
+                    } 
                 }
                 else
                 {
